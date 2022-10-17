@@ -1,8 +1,9 @@
+# Save into your repo as .github/workflows/on-tag.yaml
 name: On Tag
 on:
   push:
-    tags:
-    - "v*"
+    branches:
+      - main
 jobs:
   publish:
     runs-on: ubuntu-22.04
@@ -14,10 +15,7 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Set Tag
-        run: |
-          echo "TAG=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
       - name: Build and Push
         run: |
-          acorn build -t ghcr.io/${{ github.repository }}:$TAG .
-          acorn push ghcr.io/${{ github.repository }}:$TAG
+          acorn build -t ghcr.io/${{ github.repository }}:main .
+          acorn push ghcr.io/${{ github.repository }}:main
