@@ -1,0 +1,29 @@
+name: Acorn Main Build
+on:
+  push:
+    branches:
+    - main
+
+concurrency:
+  group: main-build
+  cancel-in-progress: true
+
+jobs:
+  publish:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v3
+      - uses: acorn-io/actions-setup@v2
+        with:
+          kubeconfig: "${{ secrets.KUBECONFIG }}"
+          acorn-init: false
+          acorn-version: main
+      - uses: acorn-io/actions-login@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build and Push
+        run: |
+          TAG=main
+          acorn build --push -t ghcr.io/${{ github.repository }}:$TAG .
