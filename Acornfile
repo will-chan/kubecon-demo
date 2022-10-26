@@ -37,16 +37,6 @@ containers: {
         ports: 4222
     }
 
-    swagger:{
-        image: "swaggerapi/swagger-ui:v4.14.0"
-        environment: {
-            BASE_URL: "/docs"
-        }
-        dirs: "/app/swagger.json": "./web-hook/conf/openapi.yaml"
-        ports: "8080/http"
-        dependsOn: ["nats", "mongo"]
-    }
-
     www: {
         build: "./www"
         dependsOn: ["nats", "mongo"]
@@ -63,7 +53,6 @@ routers: {
     default: {
         routes: {
             "/": "www:3000"
-            "/docs": "swagger:8080"
             "/ws": "ws:8080"
             "/wh": "api:5000"
             "/data": "api:5000"
